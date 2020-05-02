@@ -1,0 +1,135 @@
+export GOROOT=$HOME/go
+export GOPATH=$HOME/fabric-samples
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+docker-compose -f docker-compose.yml up -d cli
+docker exec -it cli bash
+
+##Boleto
+peer chaincode install -p github.com/boleto -n boleto -v 0 
+peer chaincode instantiate -n boleto -v 0 -c '{"Args":["init"]}' -C mychannel
+
+#fabcar (fabric_library meu google drive tem o shim e protos)
+ go get -x github.com/hyperledger/fabric/core/chaincode/shim
+ go get -x github.com/hyperledger/fabric/protos
+peer chaincode install -p github.com/fabcar/go -n fabcar -v 3
+peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -c '{"Args":["initLedger"]}'  -n fabcar -v 3
+
+peer chaincode instantiate -o orderer1.fiap.com:7050 -C fiapchannel -c '{"Args":["initLedger"]}'  -n fabcar -v 4
+
+
+naopeer chaincode instantiate -n fabcar -v 2 -c '{"Args":["initLedger]}' -C mychannel -P "OR('Org1MSP.member')"
+
+peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["initLedger"]}'
+peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
+peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["queryCar","CAR4"]}'
+peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["createCar", "CAR12", "Honda", "Accord", "black", "Tom"]}'
+docker exec cli peer chaincode invoke -C mychannel -n fabcar -c ‘{“Args”:[“queryAllCars”]}’
+docker exec cli peer chaincode invoke -C mychannel -n fabcar -c ‘{“Args”:[“changeCarOwner”, “CAR4”, “KC”]}’
+
+
+
+npm istall (javascript fabcar)
+node newEnrollAdmin.js
+node newRegisterUser.js
+node invoke.js
+node query.js
+node fabcar-backend.js
+//se porta 4001 tiver em uso
+kill $(sudo lsof -t -i:4990)
+FabCar (front end)
+
+npm install (erro Python) --> usar sudo apt-get install build-essential
+npm install express
+npm install socket.io
+
+npm run build
+npm start 
+
+
+#SDK
+https://hyperledger.github.io/fabric-sdk-node/release-1.4/tutorial-discovery.html
+
+
+#API with SDK Integration
+
+https://medium.com/@kctheservant/deep-dive-into-fabcar-part-4-386faa571ce5
+
+Steps:
+(In fabcar project/javascript)
+
+npm install express body-parser --save
+#(Create apiserver.js vi or github)
+apiserver.js
+
+var express = require('express');
+var bodyParser = require('body-parser');
+var app = express();
+app.use(bodyParser.json());
+// Setting for Hyperledger Fabric
+const { FileSystemWallet, Gateway } = require('fabric-network');
+const fs = require('fs');
+const path = require('path');
+const ccpPath = path.resolve(__dirname, '..', '..', 'basic-network', 'connection.json');
+const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
+const ccp = JSON.parse(ccpJSON);
+app.get('/api/queryallcars', async function (req, res) {
+ // to be filled in
+});
+app.get('/api/query/:car_index', async function (req, res) {
+ // to be filled in
+});
+app.post('/api/addcar/', async function (req, res) {
+ // to be filled in
+})
+app.put('/api/changeowner/:car_index', async function (req, res) {
+ // to be filled in
+})
+app.listen(8080);
+
+
+#API QUERY ALL CARS (to be filled in before)
+app.get('/api/queryallcars', async function (req, res) {
+    try {
+// Create a new file system based wallet for managing identities.
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = new FileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+// Check to see if we've already enrolled the user.
+        const userExists = await wallet.exists('user1');
+        if (!userExists) {
+            console.log('An identity for the user "user1" does not exist in the wallet');
+            console.log('Run the registerUser.js application before retrying');
+            return;
+        }
+// Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: 'user1', discovery: { enabled: false } });
+// Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('mychannel');
+// Get the contract from the network.
+        const contract = network.getContract('fabcar');
+// Evaluate the specified transaction.
+        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
+        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
+        const result = await contract.evaluateTransaction('queryAllCars');
+        console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+        res.status(200).json({response: result.toString()});
+} catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({error: error});
+        process.exit(1);
+    }
+});
+
+
+# node apiserver.js
+# usar postman para testar API
+GET ec2-18-236-204-160.us-west-2.compute.amazonaws.com:8080/api/queryallcars
+# colocar um botão na pagina e retornar resultaodo QUERY ALL
+http://ec2-18-236-204-160.us-west-2.compute.amazonaws.com:8080/api/queryallcars
+
+#Sample
+(https://stackoverflow.com/questions/53073691/react-fetch-from-external-api-function-on-button-click)
+
+
