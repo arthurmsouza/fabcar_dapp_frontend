@@ -5,11 +5,22 @@
   "dependencies": {
     "@material-ui/core": "^1.4.2",
     "@material-ui/icons": "^2.0.0",
+    "axios": "^0.19.2",
+    "constantinople": "^4.0.1",
+    "cryptiles": "^4.1.3",
+    "fibers": "^5.0.0",
+    "hoek": "^6.1.3",
     "javascript-build-essentials": "^1.0.0",
-    "react": "^16.4.1",
+    "lodash": "^4.17.15",
+    "minimatch": "^3.0.4",
+    "node-sass": "^4.14.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "socket.io-client": "^2.1.1"
+    "sass": "^1.26.5",
+    "socket.io-client": "^2.1.1",
+    "tar": "^6.0.2",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",

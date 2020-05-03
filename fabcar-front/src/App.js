@@ -17,7 +17,7 @@ class App extends Component {
     this.state = {
       showFeed: false,
       connected: false,
-      socket : socketIOClient("ec2-18-236-204-160.us-west-2.compute.amazonaws.com:4001"),
+      socket : socketIOClient("ec2-18-237-62-120.us-west-2.compute.amazonaws.com:4001"),
       //socket : socketIOClient("localhost:4001"),
       
       blocks : [],

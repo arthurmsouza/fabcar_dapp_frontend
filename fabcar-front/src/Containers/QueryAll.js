@@ -2,6 +2,8 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
+
 
 
 const styles = theme => ({
@@ -20,13 +22,16 @@ const styles = theme => ({
 });
 
 
-
-
-
 class QueryAll extends React.Component {
-  state = {
-    result: null
-  };
+  
+  constructor(props) {
+    super(props)
+    this.state = {
+      resultado: ''
+    }
+    this.socket = this.props.socket
+    this.handleClick = this.handleClick.bind(this)
+  }
 
   handleChange = name => event => {
     this.setState({
@@ -34,12 +39,11 @@ class QueryAll extends React.Component {
     });
   };
 
-  toggleButtonState() {
-    fetch('http://ec2-18-236-204-160.us-west-2.compute.amazonaws.com:8080/api/queryallcars', {
-      mode: 'no-cors' // 'cors' by default
-    })
-    .then(results => this.setState({ result: results.json()})) 
-  };
+  handleClick () { 
+    axios.get('http://18.237.62.120:8080/api/queryallcars',)
+      .then(response => this.setState({resultado: response.data.response}))
+  
+    }
   
   render() {
     const { classes } = this.props;
@@ -59,8 +63,8 @@ class QueryAll extends React.Component {
         </Button>
       <br/>
       <div>
-        <Button variant="contained" color="primary" className={classes.button} onClick={this.toggleButtonState}>queryallcars</Button>
-        <div>{this.state.result}</div>
+        <Button variant="contained" color="primary" className={classes.button} onClick={this.handleClick}>queryallcars</Button>
+        <p>{this.state.resultado}</p>
       </div>  
       </div>
       
