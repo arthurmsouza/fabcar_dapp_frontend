@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors');
 var bodyParser = require('body-parser');
 var app = express();
 app.use(bodyParser.json());
@@ -9,6 +10,9 @@ const path = require('path');
 const ccpPath = path.resolve(__dirname, '..', '..', 'basic-network', 'connection.json');
 const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
 const ccp = JSON.parse(ccpJSON);
+
+app.use(cors())
+
 app.get('/api/queryallcars', async function (req, res) {
   try {
 // Create a new file system based wallet for managing identities.

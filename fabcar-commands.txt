@@ -5,20 +5,14 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 docker-compose -f docker-compose.yml up -d cli
 docker exec -it cli bash
 
-##Boleto
-peer chaincode install -p github.com/boleto -n boleto -v 0 
-peer chaincode instantiate -n boleto -v 0 -c '{"Args":["init"]}' -C mychannel
 
-#fabcar (fabric_library meu google drive tem o shim e protos)
+
+#Fabcar (fabric_library meu google drive tem o shim e protos)
  go get -x github.com/hyperledger/fabric/core/chaincode/shim
  go get -x github.com/hyperledger/fabric/protos
 peer chaincode install -p github.com/fabcar/go -n fabcar -v 3
 peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -c '{"Args":["initLedger"]}'  -n fabcar -v 3
 
-peer chaincode instantiate -o orderer1.fiap.com:7050 -C fiapchannel -c '{"Args":["initLedger"]}'  -n fabcar -v 4
-
-
-naopeer chaincode instantiate -n fabcar -v 2 -c '{"Args":["initLedger]}' -C mychannel -P "OR('Org1MSP.member')"
 
 peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["initLedger"]}'
 peer chaincode invoke -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
@@ -60,7 +54,10 @@ Steps:
 
 npm install express body-parser --save
 #(Create apiserver.js vi or github)
+
 apiserver.js
+
+npm install cors
 
 var express = require('express');
 var bodyParser = require('body-parser');
