@@ -40,7 +40,7 @@ class QueryAll extends React.Component {
   };
 
   handleClick () { 
-    axios.get('http://54.68.166.122:8080/api/queryallcars',)
+    axios.get('http://localhost:8080/api/queryallcars')
       .then(response => this.setState({resultado: response.data.response}))
   
     }

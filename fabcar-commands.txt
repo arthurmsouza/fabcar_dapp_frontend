@@ -22,17 +22,17 @@ docker exec cli peer chaincode invoke -C mychannel -n fabcar -c ‘{“Args”:[
 docker exec cli peer chaincode invoke -C mychannel -n fabcar -c ‘{“Args”:[“changeCarOwner”, “CAR4”, “KC”]}’
 
 
-
+#fabcar_backend
 npm istall (javascript fabcar)
-node newEnrollAdmin.js
-node newRegisterUser.js
+node enrollAdmin.js
+node registerUser.js
 node invoke.js
 node query.js
 node fabcar-backend.js
 //se porta 4001 tiver em uso
-kill $(sudo lsof -t -i:4990)
-FabCar (front end)
+kill $(sudo lsof -t -i:4001)
 
+#fabCar_frontend
 npm install (erro Python) --> usar sudo apt-get install build-essential
 npm install express
 npm install socket.io
